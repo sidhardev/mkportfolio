@@ -47,6 +47,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadHtmlBtn = document.getElementById('downloadHtmlBtn');
     const previewFrame = document.getElementById('previewFrame');
 
+    // Template Elements
+    const templateCards = document.querySelectorAll('.template-card');
+
+    // Templates Configuration
+    const templates = {
+        'modern-pro': {
+            colorTheme: 'blue',
+            fontStyle: 'Inter',
+            layoutStyle: 'modern',
+            animationStyle: 'fade'
+        },
+        'creative': {
+            colorTheme: 'purple',
+            fontStyle: 'Playfair Display',
+            layoutStyle: 'bold',
+            animationStyle: 'zoom'
+        },
+        'minimalist': {
+            colorTheme: 'gray',
+            fontStyle: 'Roboto',
+            layoutStyle: 'minimalist',
+            animationStyle: 'fade'
+        },
+        'nature': {
+            colorTheme: 'green',
+            fontStyle: 'Poppins',
+            layoutStyle: 'classic',
+            animationStyle: 'slide'
+        },
+        'warm': {
+            colorTheme: 'orange',
+            fontStyle: 'Inter',
+            layoutStyle: 'classic',
+            animationStyle: 'fade'
+        }
+    };
+
     // --- Event Listeners ---
 
     // Add Skill
@@ -94,6 +131,33 @@ document.addEventListener('DOMContentLoaded', () => {
     fontStyleSelect.addEventListener('change', updateStyles);
     layoutStyleSelect.addEventListener('change', updateStyles);
     animationStyleSelect.addEventListener('change', updateStyles);
+
+    // Template Selection Event Listeners
+    templateCards.forEach(card => {
+        card.addEventListener('click', () => {
+            // Remove active state from all cards
+            templateCards.forEach(c => c.classList.remove('ring-2', 'ring-sky-500'));
+            
+            // Add active state to selected card
+            card.classList.add('ring-2', 'ring-sky-500');
+            
+            // Apply template styles
+            const templateName = card.dataset.template;
+            const template = templates[templateName];
+            
+            // Update select elements
+            colorThemeSelect.value = template.colorTheme;
+            fontStyleSelect.value = template.fontStyle;
+            layoutStyleSelect.value = template.layoutStyle;
+            animationStyleSelect.value = template.animationStyle;
+            
+            // Trigger style update
+            updateStyles();
+            
+            // Show feedback toast
+            showToast(`Template "${card.querySelector('h3').textContent}" applied successfully!`);
+        });
+    });
 
     // --- Functions ---
 
@@ -370,5 +434,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
         return portfolioData;
+    }
+
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-y-0 opacity-100';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        // Fade out and remove after 3 seconds
+        setTimeout(() => {
+            toast.classList.add('translate-y-2', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 });
