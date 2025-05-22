@@ -1,6 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- DOM Element Selections ---
-    // Personal Info
+    // First check if this is a shared portfolio
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedData = urlParams.get('data');
+    if (sharedData && window.location.hash === '#preview') {
+        try {
+            const portfolioData = JSON.parse(decodeURIComponent(atob(sharedData)));
+            const portfolioHtml = generatePortfolioHTML(portfolioData);
+            document.body.innerHTML = portfolioHtml;
+            document.title = `${portfolioData.name}'s Portfolio`;
+            return; // Stop here if this is a shared portfolio
+        } catch (error) {
+            console.error('Failed to load shared portfolio:', error);
+        }
+    }
+
+    // DOM Elements
     const nameInput = document.getElementById('name');
     const taglineInput = document.getElementById('tagline');
     const bioInput = document.getElementById('bio');
@@ -215,20 +229,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updatePreview() {
-        const data = getPortfolioData();
-        const portfolioHtml = generatePortfolioHTML(data);
+        const portfolioData = getPortfolioData();
+        const portfolioHtml = generatePortfolioHTML(portfolioData);
         previewFrame.srcdoc = portfolioHtml;
+        
+        // Create sharable link
+        const portfolioDataStr = JSON.stringify(portfolioData);
+        const portfolioDataB64 = btoa(encodeURIComponent(portfolioDataStr));
+        const shareableUrl = `${window.location.origin}${window.location.pathname}?data=${portfolioDataB64}#preview`;
+
+        // Show share dialog
+        const dialog = document.createElement('div');
+        dialog.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
+        dialog.innerHTML = `
+            <div class="bg-white rounded-lg shadow-xl p-6 max-w-lg w-full">
+                <h3 class="text-xl font-bold mb-4">Share Your Portfolio</h3>
+                <p class="mb-4">Your portfolio is ready! Copy this link to share:</p>
+                <div class="flex gap-2 mb-4">
+                    <input type="text" value="${shareableUrl}" class="flex-1 p-2 border rounded" readonly onclick="this.select()">
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onclick="navigator.clipboard.writeText('${shareableUrl}').then(() => this.textContent = 'Copied!')">Copy</button>
+                </div>
+                <button class="w-full px-4 py-2 bg-gray-100 text-gray-800 rounded hover:bg-gray-200" onclick="this.parentElement.parentElement.remove()">Close</button>
+            </div>
+        `;
+        document.body.appendChild(dialog);
     }
 
     function downloadPortfolio() {
-        const data = getPortfolioData();
-        const portfolioHtml = generatePortfolioHTML(data);
+        const portfolioData = getPortfolioData();
+        const portfolioHtml = generatePortfolioHTML(portfolioData);
         const blob = new Blob([portfolioHtml], { type: 'text/html' });
         const url = URL.createObjectURL(blob);
+        
         const a = document.createElement('a');
         a.href = url;
-        const filename = (data.name || 'portfolio').toLowerCase().replace(/\s+/g, '-') + '.html';
-        a.download = filename;
+        a.download = `${(portfolioData.name || 'portfolio').toLowerCase().replace(/\s+/g, '-')}.html`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
