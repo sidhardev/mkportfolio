@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const layoutStyleSelect = document.getElementById('layoutStyle');
     const fontStyleSelect = document.getElementById('fontStyle');
     const animationStyleSelect = document.getElementById('animationStyle');
+    const stylePreview = document.getElementById('stylePreview');
 
     // Style configurations
     const styleConfigs = {
@@ -119,6 +120,85 @@ document.addEventListener('DOMContentLoaded', () => {
     const generatePreviewBtn = document.getElementById('generatePreviewBtn');
     const downloadHtmlBtn = document.getElementById('downloadHtmlBtn');
     const previewFrame = document.getElementById('previewFrame');
+
+    // Style configuration buttons
+    const themeColorBtns = document.querySelectorAll('.theme-color-btn');
+    const layoutBtns = document.querySelectorAll('.layout-btn');
+    const fontBtns = document.querySelectorAll('.font-btn');
+    const animationBtns = document.querySelectorAll('.animation-btn');
+
+    // Add click handlers for style buttons
+    themeColorBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            colorThemeSelect.value = btn.dataset.theme;
+            updateStylePreview();
+            themeColorBtns.forEach(b => b.classList.remove('ring-2', 'ring-sky-500'));
+            btn.classList.add('ring-2', 'ring-sky-500');
+        });
+    });
+
+    layoutBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            layoutStyleSelect.value = btn.dataset.layout;
+            updateStylePreview();
+            layoutBtns.forEach(b => b.classList.remove('ring-2', 'ring-sky-500'));
+            btn.classList.add('ring-2', 'ring-sky-500');
+        });
+    });
+
+    fontBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            fontStyleSelect.value = btn.dataset.font;
+            updateStylePreview();
+            fontBtns.forEach(b => b.classList.remove('ring-2', 'ring-sky-500'));
+            btn.classList.add('ring-2', 'ring-sky-500');
+        });
+    });
+
+    animationBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            animationStyleSelect.value = btn.dataset.animation;
+            updateStylePreview();
+            animationBtns.forEach(b => b.classList.remove('ring-2', 'ring-sky-500'));
+            btn.classList.add('ring-2', 'ring-sky-500');
+        });
+    });
+
+    // Update preview on select changes
+    [colorThemeSelect, layoutStyleSelect, fontStyleSelect, animationStyleSelect].forEach(select => {
+        select?.addEventListener('change', updateStylePreview);
+    });
+
+    // Initialize style preview
+    updateStylePreview();
+
+    function updateStylePreview() {
+        const color = colorThemeSelect?.value || 'blue';
+        const layout = layoutStyleSelect?.value || 'modern';
+        const font = fontStyleSelect?.value || 'Inter';
+        const animation = animationStyleSelect?.value || 'fade';
+
+        // Update preview colors
+        stylePreview.querySelector('.style-preview-header').className = `style-preview-header bg-gradient-to-r from-${color}-500 to-${color}-600 p-6 text-white text-center`;
+        stylePreview.querySelectorAll('.bg-blue-100').forEach(el => {
+            el.className = el.className.replace('bg-blue-100', `bg-${color}-100`);
+        });
+
+        // Update preview layout
+        stylePreview.className = `bg-white rounded-lg overflow-hidden transition-all duration-300 ${
+            layout === 'modern' ? 'shadow-lg' :
+            layout === 'classic' ? 'border-t-4 border-t-current' :
+            layout === 'minimalist' ? 'border' :
+            'shadow-xl rounded-xl'
+        }`;
+
+        // Update preview font
+        stylePreview.style.fontFamily = styleConfigs.fonts[font];
+
+        // Add animation preview
+        stylePreview.setAttribute('data-aos', styleConfigs.animations[animation].dataAos);
+        stylePreview.setAttribute('data-aos-duration', styleConfigs.animations[animation].duration);
+    }
 
     // --- Event Listeners ---
 

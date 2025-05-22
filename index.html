@@ -53,9 +53,9 @@
         </header>
 
     <div class="container mx-auto max-w-5xl p-4 md:p-8">
-        <!-- Style Customization -->
+        <!-- Personal Information -->
         <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 md:mb-10" data-aos="fade-up">
-            <h2 class="text-2xl md:text-3xl font-semibold text-slate-700 border-b-2 border-sky-500 pb-3 mb-6">Customize Your Style</h2>
+            <h2 class="text-2xl md:text-3xl font-semibold text-slate-700 border-b-2 border-sky-500 pb-3 mb-6">Personal Information</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Color Theme -->
@@ -194,6 +194,154 @@
              <h2 class="text-2xl md:text-3xl font-semibold text-slate-700 border-b-2 border-sky-500 pb-3 mb-8">Generate & Download</h2>
             <button id="generatePreviewBtn" class="py-3 px-8 md:py-4 md:px-10 rounded-lg font-semibold transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 bg-sky-600 hover:bg-sky-700 text-white focus:ring-sky-500 text-lg mr-2 md:mr-4">Generate & Preview</button>
             <button id="downloadHtmlBtn" class="py-3 px-8 md:py-4 md:px-10 rounded-lg font-semibold transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 bg-slate-600 hover:bg-slate-700 text-white focus:ring-slate-500 text-lg">Download Portfolio HTML</button>
+        </section>
+
+        <!-- Style Customization -->
+        <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 md:mb-10" data-aos="fade-up">
+            <h2 class="text-2xl md:text-3xl font-semibold text-slate-700 border-b-2 border-sky-500 pb-3 mb-6">Customize Your Portfolio Style</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Style Controls -->
+                <div class="space-y-6">
+                    <!-- Color Theme -->
+                    <div>
+                        <label class="block mb-2 font-medium text-gray-700">Color Theme:</label>
+                        <div class="grid grid-cols-5 gap-2 mb-3">
+                            <button class="theme-color-btn w-full aspect-square rounded-lg border-2 border-transparent hover:border-sky-500 transition-all bg-gradient-to-br from-blue-500 to-blue-600" data-theme="blue"></button>
+                            <button class="theme-color-btn w-full aspect-square rounded-lg border-2 border-transparent hover:border-sky-500 transition-all bg-gradient-to-br from-purple-500 to-purple-600" data-theme="purple"></button>
+                            <button class="theme-color-btn w-full aspect-square rounded-lg border-2 border-transparent hover:border-sky-500 transition-all bg-gradient-to-br from-green-500 to-green-600" data-theme="green"></button>
+                            <button class="theme-color-btn w-full aspect-square rounded-lg border-2 border-transparent hover:border-sky-500 transition-all bg-gradient-to-br from-orange-500 to-orange-600" data-theme="orange"></button>
+                            <button class="theme-color-btn w-full aspect-square rounded-lg border-2 border-transparent hover:border-sky-500 transition-all bg-gradient-to-br from-gray-500 to-gray-600" data-theme="gray"></button>
+                        </div>
+                        <select id="colorTheme" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 focus:outline-none transition-colors">
+                            <option value="blue">Professional Blue</option>
+                            <option value="purple">Creative Purple</option>
+                            <option value="green">Nature Green</option>
+                            <option value="orange">Energetic Orange</option>
+                            <option value="gray">Minimal Gray</option>
+                        </select>
+                    </div>
+
+                    <!-- Layout Style -->
+                    <div>
+                        <label class="block mb-2 font-medium text-gray-700">Layout Style:</label>
+                        <div class="grid grid-cols-2 gap-4 mb-3">
+                            <button class="layout-btn p-4 rounded-lg border hover:border-sky-500 transition-all bg-white" data-layout="modern">
+                                <div class="w-full h-24 bg-gray-100 rounded-lg mb-2"></div>
+                                <div class="h-2 w-16 bg-gray-200 rounded mb-1"></div>
+                                <div class="h-2 w-24 bg-gray-200 rounded"></div>
+                            </button>
+                            <button class="layout-btn p-4 rounded-lg border hover:border-sky-500 transition-all bg-white" data-layout="classic">
+                                <div class="w-full h-24 bg-gray-100 rounded mb-2 border-t-4 border-gray-200"></div>
+                                <div class="h-2 w-16 bg-gray-200 rounded mb-1"></div>
+                                <div class="h-2 w-24 bg-gray-200 rounded"></div>
+                            </button>
+                            <button class="layout-btn p-4 rounded-lg border hover:border-sky-500 transition-all bg-white" data-layout="minimalist">
+                                <div class="w-full h-24 bg-white border rounded mb-2"></div>
+                                <div class="h-2 w-16 bg-gray-200 rounded mb-1"></div>
+                                <div class="h-2 w-24 bg-gray-200 rounded"></div>
+                            </button>
+                            <button class="layout-btn p-4 rounded-lg border hover:border-sky-500 transition-all bg-white" data-layout="bold">
+                                <div class="w-full h-24 bg-gray-100 rounded-xl shadow-lg mb-2"></div>
+                                <div class="h-2 w-16 bg-gray-200 rounded mb-1"></div>
+                                <div class="h-2 w-24 bg-gray-200 rounded"></div>
+                            </button>
+                        </div>
+                        <select id="layoutStyle" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 focus:outline-none transition-colors">
+                            <option value="modern">Modern Clean</option>
+                            <option value="classic">Classic Professional</option>
+                            <option value="minimalist">Minimalist</option>
+                            <option value="bold">Bold & Dynamic</option>
+                        </select>
+                    </div>
+
+                    <!-- Font Style -->
+                    <div>
+                        <label class="block mb-2 font-medium text-gray-700">Font Style:</label>
+                        <div class="grid grid-cols-2 gap-4 mb-3">
+                            <button class="font-btn p-4 rounded-lg border hover:border-sky-500 transition-all bg-white font-['Inter']" data-font="inter">
+                                <span class="text-xl block mb-1">Aa</span>
+                                <span class="text-sm text-gray-600">Modern & Clean</span>
+                            </button>
+                            <button class="font-btn p-4 rounded-lg border hover:border-sky-500 transition-all bg-white font-['Poppins']" data-font="poppins">
+                                <span class="text-xl block mb-1">Aa</span>
+                                <span class="text-sm text-gray-600">Professional</span>
+                            </button>
+                            <button class="font-btn p-4 rounded-lg border hover:border-sky-500 transition-all bg-white font-['Playfair_Display']" data-font="playfair">
+                                <span class="text-xl block mb-1">Aa</span>
+                                <span class="text-sm text-gray-600">Elegant</span>
+                            </button>
+                            <button class="font-btn p-4 rounded-lg border hover:border-sky-500 transition-all bg-white font-['Roboto']" data-font="roboto">
+                                <span class="text-xl block mb-1">Aa</span>
+                                <span class="text-sm text-gray-600">Versatile</span>
+                            </button>
+                        </div>
+                        <select id="fontStyle" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 focus:outline-none transition-colors">
+                            <option value="inter">Inter (Modern)</option>
+                            <option value="poppins">Poppins (Clean)</option>
+                            <option value="playfair">Playfair Display (Elegant)</option>
+                            <option value="roboto">Roboto (Professional)</option>
+                        </select>
+                    </div>
+
+                    <!-- Animation Style -->
+                    <div>
+                        <label class="block mb-2 font-medium text-gray-700">Animation Style:</label>
+                        <div class="grid grid-cols-2 gap-4 mb-3">
+                            <button class="animation-btn p-4 rounded-lg border hover:border-sky-500 transition-all bg-white" data-animation="fade">
+                                <div class="w-full h-16 bg-gray-100 rounded animate-pulse"></div>
+                                <span class="text-sm text-gray-600 mt-2 block">Subtle Fade</span>
+                            </button>
+                            <button class="animation-btn p-4 rounded-lg border hover:border-sky-500 transition-all bg-white" data-animation="slide">
+                                <div class="w-full h-16 bg-gray-100 rounded animate-bounce"></div>
+                                <span class="text-sm text-gray-600 mt-2 block">Smooth Slide</span>
+                            </button>
+                            <button class="animation-btn p-4 rounded-lg border hover:border-sky-500 transition-all bg-white" data-animation="bounce">
+                                <div class="w-full h-16 bg-gray-100 rounded transform transition-transform hover:scale-105"></div>
+                                <span class="text-sm text-gray-600 mt-2 block">Playful Bounce</span>
+                            </button>
+                            <button class="animation-btn p-4 rounded-lg border hover:border-sky-500 transition-all bg-white" data-animation="none">
+                                <div class="w-full h-16 bg-gray-100 rounded"></div>
+                                <span class="text-sm text-gray-600 mt-2 block">No Animation</span>
+                            </button>
+                        </div>
+                        <select id="animationStyle" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 focus:outline-none transition-colors">
+                            <option value="fade">Subtle Fade</option>
+                            <option value="slide">Smooth Slide</option>
+                            <option value="bounce">Playful Bounce</option>
+                            <option value="none">No Animation</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Live Style Preview -->
+                <div class="bg-gray-50 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold mb-4">Live Style Preview</h3>
+                    <div id="stylePreview" class="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300">
+                        <!-- Header Example -->
+                        <div class="style-preview-header bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white text-center">
+                            <div class="w-20 h-20 rounded-full bg-white/20 mx-auto mb-4"></div>
+                            <div class="h-4 w-32 bg-white/20 rounded mx-auto mb-2"></div>
+                            <div class="h-3 w-48 bg-white/10 rounded mx-auto"></div>
+                        </div>
+                        <!-- Content Example -->
+                        <div class="p-6">
+                            <div class="h-4 w-24 bg-gray-200 rounded mb-4"></div>
+                            <div class="space-y-2">
+                                <div class="h-3 w-full bg-gray-100 rounded"></div>
+                                <div class="h-3 w-5/6 bg-gray-100 rounded"></div>
+                                <div class="h-3 w-4/6 bg-gray-100 rounded"></div>
+                            </div>
+                            <!-- Skills Example -->
+                            <div class="flex flex-wrap gap-2 mt-6">
+                                <div class="h-6 w-16 bg-blue-100 rounded-full"></div>
+                                <div class="h-6 w-20 bg-blue-100 rounded-full"></div>
+                                <div class="h-6 w-14 bg-blue-100 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Preview -->
