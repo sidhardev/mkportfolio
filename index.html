@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impressive Portfolio Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        .form-section {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+        .form-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e3a8a; /* Darker blue */
+            border-bottom: 2px solid #3b82f6; /* Blue accent */
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151; /* Gray-700 */
+        }
+        input[type="text"], input[type="url"], input[type="email"], textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db; /* Gray-300 */
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, input[type="url"]:focus, input[type="email"]:focus, textarea:focus {
+            border-color: #3b82f6; /* Blue-500 */
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #2563eb; /* Blue-600 */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8; /* Blue-700 */
+        }
+        .btn-secondary {
+            background-color: #6b7280; /* Gray-500 */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563; /* Gray-600 */
+        }
+        .btn-danger {
+            background-color: #dc2626; /* Red-600 */
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #b91c1c; /* Red-700 */
+        }
+        .skill-tag {
+            background-color: #e0e7ff; /* Indigo-100 */
+            color: #3730a3; /* Indigo-800 */
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        .skill-tag button {
+            margin-left: 0.5rem;
+            color: #4f46e5; /* Indigo-600 */
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="container mx-auto max-w-4xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-blue-700">Impressive Portfolio Generator</h1>
+            <p class="text-lg text-gray-600 mt-2">Fill in your details to generate a stunning portfolio website!</p>
+        </header>
+
+        <!-- Personal Information -->
+        <section class="form-section">
+            <h2>Personal Information</h2>
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" placeholder="e.g., Ada Lovelace">
+
+            <label for="tagline">Tagline/Job Title:</label>
+            <input type="text" id="tagline" placeholder="e.g., Analytical Engine Pioneer | Software Developer">
+
+            <label for="bio">Bio:</label>
+            <textarea id="bio" rows="4" placeholder="Tell us a bit about yourself..."></textarea>
+
+            <label for="profilePicUrl">Profile Picture URL:</label>
+            <input type="url" id="profilePicUrl" placeholder="https://example.com/your-image.jpg">
+
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" placeholder="e.g., ada@example.com">
+
+            <label for="linkedin">LinkedIn Profile URL:</label>
+            <input type="url" id="linkedin" placeholder="https://linkedin.com/in/yourprofile">
+
+            <label for="github">GitHub Profile URL:</label>
+            <input type="url" id="github" placeholder="https://github.com/yourusername">
+        </section>
+
+        <!-- Skills -->
+        <section class="form-section">
+            <h2>Skills</h2>
+            <div class="flex mb-4">
+                <input type="text" id="skillInput" placeholder="e.g., JavaScript" class="flex-grow mr-2 !mb-0">
+                <button id="addSkillBtn" class="btn btn-primary">Add Skill</button>
+            </div>
+            <div id="skillsContainer" class="flex flex-wrap">
+                <!-- Skills will be added here -->
+            </div>
+        </section>
+
+        <!-- Projects -->
+        <section class="form-section">
+            <h2>Projects</h2>
+            <div id="projectsContainer">
+                <!-- Project forms will be added here -->
+            </div>
+            <button id="addProjectBtn" class="btn btn-primary mt-4">Add Project</button>
+        </section>
+
+        <!-- Actions -->
+        <section class="form-section text-center">
+            <button id="generatePreviewBtn" class="btn btn-primary text-lg mr-4">Generate & Preview</button>
+            <button id="downloadHtmlBtn" class="btn btn-secondary text-lg">Download Portfolio HTML</button>
+        </section>
+
+        <!-- Preview -->
+        <section class="form-section">
+            <h2>Preview</h2>
+            <iframe id="previewFrame" class="w-full h-96 border border-gray-300 rounded"></iframe>
+        </section>
+
+    </div>
+
+    <!-- Project Form Template (hidden) -->
+    <template id="projectFormTemplate">
+        <div class="project-form-instance border p-6 mb-6 rounded-md shadow-sm bg-gray-50 relative">
+            <button class="remove-project-btn btn btn-danger btn-sm absolute top-2 right-2 text-xs px-2 py-1">Remove</button>
+            <h3 class="text-lg font-semibold mb-3 text-gray-700">New Project</h3>
+            
+            <label>Project Title:</label>
+            <input type="text" class="project-title-input" placeholder="e.g., My Awesome App">
+
+            <label>Description:</label>
+            <textarea class="project-description-input" rows="3" placeholder="A brief description of your project..."></textarea>
+
+            <label>Image URL (Optional):</label>
+            <input type="url" class="project-imageUrl-input" placeholder="https://example.com/project-image.jpg">
+
+            <label>Live Demo URL (Optional):</label>
+            <input type="url" class="project-liveUrl-input" placeholder="https://example.com/live-demo">
+
+            <label>Source Code URL (Optional):</label>
+            <input type="url" class="project-repoUrl-input" placeholder="https://github.com/yourusername/project-repo">
+
+            <label>Technologies Used (comma-separated):</label>
+            <input type="text" class="project-technologies-input" placeholder="e.g., HTML, CSS, JavaScript, React">
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+```
+```diff
