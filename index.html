@@ -8,6 +8,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- Favicon (optional, example) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
     <style>
@@ -15,12 +20,29 @@
         body { 
             font-family: 'Inter', sans-serif; /* Fallback font */
         }
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .shine {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background-size: 200% 100%;
+            animation: shine 3s infinite;
+        }
+        @keyframes shine {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-100 to-sky-100 text-gray-800 font-['Inter'] antialiased">
     
     <!-- Header Section -->
-    <header class="relative bg-cover bg-center py-20 md:py-32 text-white text-center shadow-lg" style="background-image: url('https://images.unsplash.com/photo-1489844097929-c8d5b91c456e?auto=format&fit=crop&w=1740&q=80');">
+    <header class="relative bg-cover bg-center py-20 md:py-32 text-white text-center shadow-lg" data-aos="fade-down" style="background-image: url('https://images.unsplash.com/photo-1489844097929-c8d5b91c456e?auto=format&fit=crop&w=1740&q=80');">
         <div class="absolute inset-0 bg-slate-800 opacity-60"></div> <!-- Overlay -->
         <div class="relative z-10 container mx-auto px-4">
             <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">Impressive Portfolio Generator</h1>
@@ -31,8 +53,68 @@
         </header>
 
     <div class="container mx-auto max-w-5xl p-4 md:p-8">
+        <!-- Style Customization -->
+        <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 md:mb-10" data-aos="fade-up">
+            <h2 class="text-2xl md:text-3xl font-semibold text-slate-700 border-b-2 border-sky-500 pb-3 mb-6">Customize Your Style</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Color Theme -->
+                <div>
+                    <label class="block mb-2 font-medium text-gray-700">Color Theme:</label>
+                    <select id="colorTheme" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 focus:outline-none transition-colors">
+                        <option value="blue">Professional Blue</option>
+                        <option value="purple">Creative Purple</option>
+                        <option value="green">Nature Green</option>
+                        <option value="orange">Energetic Orange</option>
+                        <option value="gray">Minimal Gray</option>
+                    </select>
+                </div>
+
+                <!-- Layout Style -->
+                <div>
+                    <label class="block mb-2 font-medium text-gray-700">Layout Style:</label>
+                    <select id="layoutStyle" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 focus:outline-none transition-colors">
+                        <option value="modern">Modern Clean</option>
+                        <option value="classic">Classic Professional</option>
+                        <option value="minimalist">Minimalist</option>
+                        <option value="bold">Bold & Dynamic</option>
+                    </select>
+                </div>
+
+                <!-- Font Style -->
+                <div>
+                    <label class="block mb-2 font-medium text-gray-700">Font Style:</label>
+                    <select id="fontStyle" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 focus:outline-none transition-colors">
+                        <option value="inter">Inter (Modern)</option>
+                        <option value="poppins">Poppins (Clean)</option>
+                        <option value="playfair">Playfair Display (Elegant)</option>
+                        <option value="roboto">Roboto (Professional)</option>
+                    </select>
+                </div>
+
+                <!-- Animation Style -->
+                <div>
+                    <label class="block mb-2 font-medium text-gray-700">Animation Style:</label>
+                    <select id="animationStyle" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 focus:outline-none transition-colors">
+                        <option value="fade">Subtle Fade</option>
+                        <option value="slide">Smooth Slide</option>
+                        <option value="bounce">Playful Bounce</option>
+                        <option value="none">No Animation</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Preview of selected style -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h3 class="text-lg font-semibold mb-2">Style Preview</h3>
+                <div id="stylePreview" class="h-20 bg-white rounded border flex items-center justify-center">
+                    <p class="text-lg">Your selected style will be previewed here</p>
+                </div>
+            </div>
+        </section>
+
         <!-- Personal Information -->
-        <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 md:mb-10">
+        <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 md:mb-10" data-aos="fade-up" data-aos-delay="100">
             <h2 class="text-2xl md:text-3xl font-semibold text-slate-700 border-b-2 border-sky-500 pb-3 mb-6">Personal Information</h2>
             
             <label for="name" class="block mb-2 font-medium text-gray-700">Full Name:</label>
@@ -58,7 +140,7 @@
         </section>
 
         <!-- Skills -->
-        <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 md:mb-10">
+        <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 md:mb-10" data-aos="fade-up" data-aos-delay="200">
             <h2 class="text-2xl md:text-3xl font-semibold text-slate-700 border-b-2 border-sky-500 pb-3 mb-6">Skills</h2>
             <div class="flex mb-4">
                 <input type="text" id="skillInput" placeholder="e.g., JavaScript" class="flex-grow mr-3 p-3 border border-gray-300 rounded-lg shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 focus:outline-none transition-colors">
@@ -70,7 +152,7 @@
         </section>
 
         <!-- Projects -->
-        <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 md:mb-10">
+        <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 md:mb-10" data-aos="fade-up" data-aos-delay="300">
             <h2 class="text-2xl md:text-3xl font-semibold text-slate-700 border-b-2 border-sky-500 pb-3 mb-6">Projects</h2>
             <div id="projectsContainer">
                 <!-- Project forms will be added here -->
@@ -79,14 +161,14 @@
         </section>
 
         <!-- Actions -->
-        <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 md:mb-10 text-center">
+        <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 md:mb-10 text-center" data-aos="fade-up" data-aos-delay="400">
              <h2 class="text-2xl md:text-3xl font-semibold text-slate-700 border-b-2 border-sky-500 pb-3 mb-8">Generate & Download</h2>
             <button id="generatePreviewBtn" class="py-3 px-8 md:py-4 md:px-10 rounded-lg font-semibold transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 bg-sky-600 hover:bg-sky-700 text-white focus:ring-sky-500 text-lg mr-2 md:mr-4">Generate & Preview</button>
             <button id="downloadHtmlBtn" class="py-3 px-8 md:py-4 md:px-10 rounded-lg font-semibold transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 bg-slate-600 hover:bg-slate-700 text-white focus:ring-slate-500 text-lg">Download Portfolio HTML</button>
         </section>
 
         <!-- Preview -->
-        <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl">
+        <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl" data-aos="fade-up" data-aos-delay="500">
             <h2 class="text-2xl md:text-3xl font-semibold text-slate-700 border-b-2 border-sky-500 pb-3 mb-6">Live Preview</h2>
             <iframe id="previewFrame" class="w-full h-[32rem] md:h-[48rem] border border-gray-300 rounded-lg shadow-inner bg-white"></iframe>
         </section>
@@ -129,6 +211,14 @@
         <p class="text-xs text-slate-400 mt-1">Inspired by creativity, built with code.</p>
     </footer>
 
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
