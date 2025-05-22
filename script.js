@@ -267,6 +267,81 @@ document.addEventListener('DOMContentLoaded', () => {
     // Download HTML
     downloadHtmlBtn.addEventListener('click', downloadPortfolio);
 
+    // Share Portfolio
+    const sharePortfolioBtn = document.getElementById('sharePortfolioBtn');
+    sharePortfolioBtn?.addEventListener('click', handleShare);
+
+    async function handleShare() {
+        if (!validateForm()) return;
+
+        const resetLoading = showLoading(sharePortfolioBtn, 'Creating Share Link...');
+        try {
+            const data = getPortfolioData();
+            // Create shareable link
+            const shareData = btoa(encodeURIComponent(JSON.stringify(data)));
+            const shareUrl = `${window.location.origin}${window.location.pathname}?data=${shareData}#preview`;
+            
+            // Create or update share section
+            const shareSection = document.getElementById('shareSection');
+            shareSection.className = 'mt-8 p-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm';
+            shareSection.innerHTML = `
+                <h3 class="text-lg font-semibold text-slate-700 mb-2">Your Shareable Link:</h3>
+                <div class="flex items-center space-x-2">
+                    <input type="text" value="${shareUrl}" readonly class="w-full p-2.5 border border-gray-300 rounded-md bg-gray-100 cursor-text">
+                    <button id="copyShareUrlBtn" class="py-2.5 px-4 rounded-md font-semibold transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 bg-sky-500 hover:bg-sky-600 text-white focus:ring-sky-400 shrink-0">
+                        Copy
+                    </button>
+                </div>
+            `;
+
+            // Add copy functionality
+            document.getElementById('copyShareUrlBtn').addEventListener('click', () => {
+                const input = shareSection.querySelector('input');
+                input.select();
+                document.execCommand('copy');
+                const btn = document.getElementById('copyShareUrlBtn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+
+            // Try to use the Share API if available
+            if (navigator.share) {
+                shareSection.innerHTML += `
+                    <button id="nativeShareBtn" class="mt-4 py-2 px-4 w-full rounded-md font-semibold transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 bg-slate-100 hover:bg-slate-200 text-slate-700 focus:ring-slate-400 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                        </svg>
+                        Share via...
+                    </button>
+                `;
+                document.getElementById('nativeShareBtn').addEventListener('click', async () => {
+                    try {
+                        await navigator.share({
+                            title: `${data.name}'s Portfolio`,
+                            text: `Check out ${data.name}'s portfolio!`,
+                            url: shareUrl
+                        });
+                    } catch (err) {
+                        if (err.name !== 'AbortError') {
+                            console.error('Share failed:', err);
+                        }
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Share failed:', error);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'bg-red-50 border-l-4 border-red-500 p-4 mt-4';
+            errorDiv.innerHTML = `
+                <h3 class="text-red-800 font-medium">Share failed</h3>
+                <p class="text-red-600">${error.message}</p>
+            `;
+            sharePortfolioBtn.parentNode.appendChild(errorDiv);
+        } finally {
+            resetLoading();
+        }
+    }
+
     // --- Functions ---
 
     function addSkillToDom(skillText) {
@@ -506,103 +581,223 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    function handlePreviewGeneration() {
-        const portfolioData = getPortfolioData();
-        const portfolioHtml = generatePortfolioHTML(portfolioData);
-        
-        // Update the preview iframe
-        previewFrame.srcdoc = portfolioHtml;
+    function validateForm() {
+        const data = getPortfolioData();
+        const errors = [];
 
-        // Create sharable link
-        const portfolioDataStr = JSON.stringify(portfolioData);
-        const portfolioDataB64 = btoa(encodeURIComponent(portfolioDataStr));
-        const shareableUrl = `${window.location.origin}${window.location.pathname}?data=${portfolioDataB64}#preview`;
+        if (!data.name.trim()) errors.push('Name is required');
+        if (!data.tagline.trim()) errors.push('Tagline is required');
+        if (!data.bio.trim()) errors.push('Bio is required');
+        if (data.projects.length === 0) errors.push('At least one project is required');
+        if (data.skills.length === 0) errors.push('At least one skill is required');
 
-        // Add share button if it doesn't exist
-        let shareBtn = document.getElementById('sharePortfolioBtn');
-        if (!shareBtn) {
-            shareBtn = document.createElement('button');
-            shareBtn.id = 'sharePortfolioBtn';
-            shareBtn.className = 'ml-4 py-3 px-8 md:py-4 md:px-10 rounded-lg font-semibold transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 bg-green-600 hover:bg-green-700 text-white focus:ring-green-500 text-lg inline-flex items-center';
-            shareBtn.innerHTML = `
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
-                </svg>
-                Share Portfolio
+        data.projects.forEach((project, index) => {
+            if (!project.title.trim()) errors.push(`Project ${index + 1}: Title is required`);
+            if (!project.description.trim()) errors.push(`Project ${index + 1}: Description is required`);
+            if (!project.technologies.length) errors.push(`Project ${index + 1}: At least one technology is required`);
+        });
+
+        if (errors.length > 0) {
+            const errorList = errors.map(err => `<li class="text-red-600">${err}</li>`).join('');
+            const errorDiv = document.getElementById('validationErrors') || document.createElement('div');
+            errorDiv.id = 'validationErrors';
+            errorDiv.className = 'bg-red-50 border-l-4 border-red-500 p-4 mb-6';
+            errorDiv.innerHTML = `
+                <h3 class="text-red-800 font-medium mb-2">Please fix the following errors:</h3>
+                <ul class="list-disc list-inside">${errorList}</ul>
             `;
-            // Insert after preview button
-            generatePreviewBtn.parentNode.insertBefore(shareBtn, generatePreviewBtn.nextSibling);
+            generatePreviewBtn.parentNode.insertBefore(errorDiv, generatePreviewBtn);
+            return false;
+        }
+
+        const validationErrors = document.getElementById('validationErrors');
+        if (validationErrors) validationErrors.remove();
+        return true;
+    }
+
+    function showLoading(element, message = 'Loading...') {
+        const originalContent = element.innerHTML;
+        element.disabled = true;
+        element.innerHTML = `
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            ${message}
+        `;
+        return () => {
+            element.disabled = false;
+            element.innerHTML = originalContent;
+        };
+    }
+
+    async function handlePreviewGeneration() {
+        if (!validateForm()) return;
+
+        const resetLoading = showLoading(generatePreviewBtn, 'Generating Preview...');
+        try {
+            const data = getPortfolioData();
+            const html = generatePortfolioHTML(data);
             
-            // Add click handler for share button
-            shareBtn.addEventListener('click', () => {
-                // Show share modal with nice transition
-                const dialog = document.createElement('div');
-                dialog.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
-                dialog.innerHTML = `
-                    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full transform transition-all" data-aos="zoom-in">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-2xl font-bold text-gray-800">Share Your Portfolio</h3>
-                            <button class="text-gray-400 hover:text-gray-600 transition-colors close-dialog">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="p-4 bg-gray-50 rounded-xl mb-6">
-                            <p class="text-gray-600 mb-2">Your portfolio is ready! Share it with the world:</p>
-                            <div class="flex gap-2">
-                                <input type="text" value="${shareableUrl}" class="flex-1 p-3 border border-gray-200 rounded-lg bg-white font-mono text-sm" readonly onclick="this.select()">
-                                <button class="copy-link px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors flex items-center gap-2 whitespace-nowrap">
+            // Create preview iframe if it doesn't exist
+            const previewSection = document.getElementById('previewSection');
+            previewSection.classList.remove('hidden');
+            
+            if (!document.getElementById('previewFrame')) {
+                previewSection.innerHTML = `
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <div class="flex items-center justify-between px-4 py-2 bg-gray-100 border-b">
+                            <h3 class="text-gray-800 font-medium">Preview</h3>
+                            <div class="flex items-center gap-2">
+                                <button id="reloadPreview" class="text-gray-600 hover:text-gray-800">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                                     </svg>
-                                    Copy Link
+                                </button>
+                                <button id="togglePreviewSize" class="text-gray-600 hover:text-gray-800">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                                    </svg>
                                 </button>
                             </div>
                         </div>
-                        <div class="flex gap-4">
-                            <a href="${shareableUrl}" target="_blank" class="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-center">Open Preview</a>
-                            <button class="close-dialog flex-1 px-4 py-3 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">Close</button>
+                        <div class="relative w-full">
+                            <div id="previewLoading" class="absolute inset-0 flex items-center justify-center bg-gray-50">
+                                <div class="text-center">
+                                    <svg class="animate-spin mx-auto h-8 w-8 text-sky-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <p class="mt-2 text-sm text-gray-600">Loading preview...</p>
+                                </div>
+                            </div>
+                            <iframe id="previewFrame" class="w-full transition-all duration-300" style="height: 600px;"></iframe>
                         </div>
                     </div>
                 `;
-                document.body.appendChild(dialog);
 
-                // Handle closing the dialog
-                dialog.querySelectorAll('.close-dialog').forEach(btn => {
-                    btn.addEventListener('click', () => dialog.remove());
+                // Add toggle preview size functionality
+                document.getElementById('togglePreviewSize').addEventListener('click', () => {
+                    const frame = document.getElementById('previewFrame');
+                    const currentHeight = frame.style.height;
+                    frame.style.height = currentHeight === '600px' ? '800px' : '600px';
                 });
 
-                // Handle copy link button
-                dialog.querySelector('.copy-link').addEventListener('click', function() {
-                    navigator.clipboard.writeText(shareableUrl).then(() => {
-                        this.innerHTML = `
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            Copied!
-                        `;
-                        setTimeout(() => {
-                            dialog.remove();
-                        }, 1500);
-                    });
+                // Add reload functionality
+                document.getElementById('reloadPreview').addEventListener('click', () => {
+                    const frame = document.getElementById('previewFrame');
+                    frame.srcdoc = frame.srcdoc;
                 });
+            }
+
+            // Update preview
+            const frame = document.getElementById('previewFrame');
+            const loadingDiv = document.getElementById('previewLoading');
+            
+            // Show loading state
+            loadingDiv.style.display = 'flex';
+            
+            // Update iframe content
+            frame.srcdoc = html;
+            
+            // Hide loading when iframe is loaded
+            frame.onload = () => {
+                loadingDiv.style.display = 'none';
+            };
+
+            // Create shareable link
+            const shareData = btoa(encodeURIComponent(JSON.stringify(data)));
+            const shareUrl = `${window.location.origin}${window.location.pathname}?data=${shareData}#preview`;
+            
+            const shareSection = document.getElementById('shareSection') || document.createElement('div');
+            shareSection.id = 'shareSection';
+            shareSection.className = 'mt-4 p-4 bg-blue-50 rounded-lg';
+            shareSection.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <input type="text" value="${shareUrl}" readonly class="flex-1 p-2 border rounded bg-white text-sm" />
+                    <button id="copyShareLink" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                        Copy Link
+                    </button>
+                </div>
+            `;
+            previewSection.appendChild(shareSection);
+
+            // Add copy functionality
+            document.getElementById('copyShareLink').addEventListener('click', () => {
+                const input = shareSection.querySelector('input');
+                input.select();
+                document.execCommand('copy');
+                const btn = document.getElementById('copyShareLink');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy Link', 2000);
             });
+        } catch (error) {
+            console.error('Preview generation failed:', error);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'bg-red-50 border-l-4 border-red-500 p-4 mt-4';
+            errorDiv.innerHTML = `
+                <h3 class="text-red-800 font-medium">Preview generation failed</h3>
+                <p class="text-red-600">${error.message}</p>
+            `;
+            generatePreviewBtn.parentNode.appendChild(errorDiv);
+        } finally {
+            resetLoading();
         }
     }
 
-    function downloadPortfolio() {
-        const portfolioData = getPortfolioData();
-        const portfolioHtml = generatePortfolioHTML(portfolioData);
-        const blob = new Blob([portfolioHtml], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
+    async function downloadPortfolio() {
+        if (!validateForm()) return;
+
+        const resetLoading = showLoading(downloadHtmlBtn, 'Preparing Download...');
+        try {
+            const data = getPortfolioData();
+            const html = generatePortfolioHTML(data);
+            
+            // Create blob and download
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${data.name.toLowerCase().replace(/\s+/g, '-')}-portfolio.html`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (error) {
+            console.error('Download failed:', error);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'bg-red-50 border-l-4 border-red-500 p-4 mt-4';
+            errorDiv.innerHTML = `
+                <h3 class="text-red-800 font-medium">Download failed</h3>
+                <p class="text-red-600">${error.message}</p>
+            `;
+            downloadHtmlBtn.parentNode.appendChild(errorDiv);
+        } finally {
+            resetLoading();
+        }
+    }
+
+    // Initialize form with example data in development
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        nameInput.value = 'John Doe';
+        taglineInput.value = 'Full Stack Developer & UI/UX Enthusiast';
+        bioInput.value = 'Passionate developer with 5+ years of experience in creating beautiful and functional web applications. Specialized in React, Node.js, and modern web technologies.';
+        profilePicUrlInput.value = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80';
+        emailInput.value = 'john@example.com';
+        linkedinInput.value = 'https://linkedin.com/in/johndoe';
+        githubInput.value = 'https://github.com/johndoe';
         
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${(portfolioData.name || 'portfolio').toLowerCase().replace(/\s+/g, '-')}.html`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        ['JavaScript', 'React', 'Node.js', 'TypeScript', 'Python'].forEach(skill => addSkillToDom(skill));
+        
+        addProjectForm();
+        const projectForm = document.querySelector('.project-form-instance');
+        if (projectForm) {
+            projectForm.querySelector('.project-title-input').value = 'Portfolio Generator';
+            projectForm.querySelector('.project-description-input').value = 'A modern portfolio generator built with vanilla JavaScript and Tailwind CSS. Features live preview, custom themes, and responsive design.';
+            projectForm.querySelector('.project-technologies-input').value = 'JavaScript,Tailwind CSS,HTML5';
+            projectForm.querySelector('.project-imageUrl-input').value = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2100&q=80';
+            projectForm.querySelector('.project-liveUrl-input').value = 'https://example.com/portfolio';
+            projectForm.querySelector('.project-repoUrl-input').value = 'https://github.com/example/portfolio';
+        }
     }
 });
