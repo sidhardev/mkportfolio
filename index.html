@@ -94,6 +94,37 @@
             cursor: pointer;
             font-weight: bold;
         }
+        .mobile-menu-btn {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                display: none;
+                width: 100%;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background: white;
+                padding: 1rem;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+            
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links a {
+                display: block;
+                padding: 0.5rem 0;
+            }
+        }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -166,32 +197,35 @@
     <!-- Project Form Template (hidden) -->
     <template id="projectFormTemplate">
         <div class="project-form-instance border p-6 mb-6 rounded-md shadow-sm bg-gray-50 relative">
-            <button class="remove-project-btn btn btn-danger btn-sm absolute top-2 right-2 text-xs px-2 py-1">Remove</button>
+            <button class="remove-project-btn btn btn-danger absolute top-2 right-2 text-xs px-2 py-1">Remove</button>
             <h3 class="text-lg font-semibold mb-3 text-gray-700">New Project</h3>
             
-            <label>Project Title:</label>
-            <input type="text" class="project-title-input" placeholder="e.g., My Awesome App">
+            <label>Project Title:
+                <input type="text" class="project-title-input" placeholder="e.g., My Awesome App">
+            </label>
 
-            <label>Description:</label>
-            <textarea class="project-description-input" rows="3" placeholder="A brief description of your project..."></textarea>
+            <label>Description:
+                <textarea class="project-description-input" rows="3" placeholder="A brief description of your project..."></textarea>
+            </label>
 
-            <label>Image URL (Optional):</label>
-            <input type="url" class="project-imageUrl-input" placeholder="https://example.com/project-image.jpg">
+            <label>Image URL (Optional):
+                <input type="url" class="project-imageUrl-input" placeholder="https://example.com/project-image.jpg">
+            </label>
 
-            <label>Live Demo URL (Optional):</label>
-            <input type="url" class="project-liveUrl-input" placeholder="https://example.com/live-demo">
+            <label>Live Demo URL (Optional):
+                <input type="url" class="project-liveUrl-input" placeholder="https://example.com/live-demo">
+            </label>
 
-            <label>Source Code URL (Optional):</label>
-            <input type="url" class="project-repoUrl-input" placeholder="https://github.com/yourusername/project-repo">
+            <label>Source Code URL (Optional):
+                <input type="url" class="project-repoUrl-input" placeholder="https://github.com/yourusername/project-repo">
+            </label>
 
-            <label>Technologies Used (comma-separated):</label>
-            <input type="text" class="project-technologies-input" placeholder="e.g., HTML, CSS, JavaScript, React">
+            <label>Technologies Used (comma-separated):
+                <input type="text" class="project-technologies-input" placeholder="e.g., HTML, CSS, JavaScript, React">
+            </label>
         </div>
     </template>
 
     <script src="script.js"></script>
 </body>
 </html>
-
-```
-```diff
