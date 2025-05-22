@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Generate Preview
-    generatePreviewBtn.addEventListener('click', updatePreview);
+    generatePreviewBtn.addEventListener('click', handlePreviewGeneration);
 
     // Download HTML
     downloadHtmlBtn.addEventListener('click', downloadPortfolio);
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 imageUrl: projectDiv.querySelector('.project-imageUrl-input')?.value.trim() || '',
                 liveUrl: projectDiv.querySelector('.project-liveUrl-input')?.value.trim() || '',
                 repoUrl: projectDiv.querySelector('.project-repoUrl-input')?.value.trim() || '',
-                technologies: projectDiv.querySelector('.project-technologies-input')?.value.split(',').map(t => t.trim()).filter(t => t) || []
+                technologies: (projectDiv.querySelector('.project-technologies-input')?.value || '').split(',').map(t => t.trim()).filter(t => t)
             }));
 
         return {
@@ -426,51 +426,89 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    function updatePreview() {
+    function handlePreviewGeneration() {
         const portfolioData = getPortfolioData();
         const portfolioHtml = generatePortfolioHTML(portfolioData);
-        previewFrame.srcdoc = portfolioHtml;
         
+        // Update the preview iframe
+        previewFrame.srcdoc = portfolioHtml;
+
         // Create sharable link
         const portfolioDataStr = JSON.stringify(portfolioData);
         const portfolioDataB64 = btoa(encodeURIComponent(portfolioDataStr));
         const shareableUrl = `${window.location.origin}${window.location.pathname}?data=${portfolioDataB64}#preview`;
 
-        // Show modern share modal
-        const dialog = document.createElement('div');
-        dialog.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
-        dialog.innerHTML = `
-            <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full transform transition-all" data-aos="zoom-in">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-2xl font-bold text-gray-800">Share Your Portfolio</h3>
-                    <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                <div class="p-4 bg-gray-50 rounded-xl mb-6">
-                    <p class="text-gray-600 mb-2">Your portfolio is ready! Share it with the world:</p>
-                    <div class="flex gap-2">
-                        <input type="text" value="${shareableUrl}" class="flex-1 p-3 border border-gray-200 rounded-lg bg-white font-mono text-sm" readonly onclick="this.select()">
-                        <button class="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors flex items-center gap-2 whitespace-nowrap" onclick="navigator.clipboard.writeText('${shareableUrl}').then(() => this.innerHTML = '<svg class=\\'w-5 h-5\\' fill=\\'none\\' stroke=\\'currentColor\\'><path stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' stroke-width=\\'2\\' d=\\'M5 13l4 4L19 7\\'></path></svg>Copied!')">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                            </svg>
-                            Copy Link
-                        </button>
+        // Add share button if it doesn't exist
+        let shareBtn = document.getElementById('sharePortfolioBtn');
+        if (!shareBtn) {
+            shareBtn = document.createElement('button');
+            shareBtn.id = 'sharePortfolioBtn';
+            shareBtn.className = 'ml-4 py-3 px-8 md:py-4 md:px-10 rounded-lg font-semibold transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 bg-green-600 hover:bg-green-700 text-white focus:ring-green-500 text-lg inline-flex items-center';
+            shareBtn.innerHTML = `
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                </svg>
+                Share Portfolio
+            `;
+            // Insert after preview button
+            generatePreviewBtn.parentNode.insertBefore(shareBtn, generatePreviewBtn.nextSibling);
+            
+            // Add click handler for share button
+            shareBtn.addEventListener('click', () => {
+                // Show share modal with nice transition
+                const dialog = document.createElement('div');
+                dialog.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
+                dialog.innerHTML = `
+                    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full transform transition-all" data-aos="zoom-in">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-2xl font-bold text-gray-800">Share Your Portfolio</h3>
+                            <button class="text-gray-400 hover:text-gray-600 transition-colors close-dialog">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-xl mb-6">
+                            <p class="text-gray-600 mb-2">Your portfolio is ready! Share it with the world:</p>
+                            <div class="flex gap-2">
+                                <input type="text" value="${shareableUrl}" class="flex-1 p-3 border border-gray-200 rounded-lg bg-white font-mono text-sm" readonly onclick="this.select()">
+                                <button class="copy-link px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors flex items-center gap-2 whitespace-nowrap">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                    </svg>
+                                    Copy Link
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <a href="${shareableUrl}" target="_blank" class="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-center">Open Preview</a>
+                            <button class="close-dialog flex-1 px-4 py-3 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">Close</button>
+                        </div>
                     </div>
-                </div>
-                <div class="flex gap-4">
-                    <a href="${shareableUrl}" target="_blank" class="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-center">Open Preview</a>
-                    <button onclick="this.closest('.fixed').remove()" class="flex-1 px-4 py-3 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">Close</button>
-                </div>
-                <div class="mt-6 pt-6 border-t border-gray-200">
-                    <p class="text-sm text-gray-500 text-center">Want to edit? Just make your changes and click "Generate & Preview" again!</p>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(dialog);
+                `;
+                document.body.appendChild(dialog);
+
+                // Handle closing the dialog
+                dialog.querySelectorAll('.close-dialog').forEach(btn => {
+                    btn.addEventListener('click', () => dialog.remove());
+                });
+
+                // Handle copy link button
+                dialog.querySelector('.copy-link').addEventListener('click', function() {
+                    navigator.clipboard.writeText(shareableUrl).then(() => {
+                        this.innerHTML = `
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Copied!
+                        `;
+                        setTimeout(() => {
+                            dialog.remove();
+                        }, 1500);
+                    });
+                });
+            });
+        }
     }
 
     function downloadPortfolio() {
