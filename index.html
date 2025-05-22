@@ -54,7 +54,6 @@
 
     <div class="container mx-auto max-w-5xl p-4 md:p-8">
         <!-- Style Customization -->
-      
         <!-- Personal Information -->
         <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 md:mb-10" data-aos="fade-up" data-aos-delay="100">
             <h2 class="text-2xl md:text-3xl font-semibold text-slate-700 border-b-2 border-sky-500 pb-3 mb-6">Personal Information</h2>
@@ -100,6 +99,50 @@
                 <!-- Project forms will be added here -->
             </div>
             <button id="addProjectBtn" class="py-3 px-6 rounded-lg font-semibold transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 bg-sky-600 hover:bg-sky-700 text-white focus:ring-sky-500 mt-6">Add Another Project</button>
+        </section>
+
+        <!-- Style Customization -->
+        <section class="bg-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 md:mb-10" data-aos="fade-up" data-aos-delay="350">
+            <h2 class="text-2xl md:text-3xl font-semibold text-slate-700 border-b-2 border-sky-500 pb-3 mb-6">Customize Your Style</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                <div>
+                    <label for="colorTheme" class="block mb-2 font-medium text-gray-700">Color Theme:</label>
+                    <select id="colorTheme" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 focus:outline-none transition-colors">
+                        <option value="blue" selected>Blue (Default)</option>
+                        <option value="purple">Purple</option>
+                        <option value="green">Green</option>
+                        <option value="orange">Orange</option>
+                        <option value="gray">Gray</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="fontStyle" class="block mb-2 font-medium text-gray-700">Font Style:</label>
+                    <select id="fontStyle" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 focus:outline-none transition-colors">
+                        <option value="Inter" selected>Inter (Default)</option>
+                        <option value="Poppins">Poppins</option>
+                        <option value="Playfair Display">Playfair Display</option>
+                        <option value="Roboto">Roboto</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="layoutStyle" class="block mb-2 font-medium text-gray-700">Layout Style:</label>
+                    <select id="layoutStyle" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 focus:outline-none transition-colors">
+                        <option value="modern" selected>Modern (Default)</option>
+                        <option value="classic">Classic</option>
+                        <option value="minimalist">Minimalist</option>
+                        <option value="bold">Bold</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="animationStyle" class="block mb-2 font-medium text-gray-700">Animation Style:</label>
+                    <select id="animationStyle" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 focus:outline-none transition-colors">
+                        <option value="fade" selected>Fade Up (Default)</option>
+                        <option value="slide">Slide Up</option>
+                        <option value="zoom">Zoom In</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+            </div>
         </section>
 
         <!-- Actions -->
